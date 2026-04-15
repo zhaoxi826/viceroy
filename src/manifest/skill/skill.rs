@@ -21,11 +21,22 @@ impl SkillModel{
         let mut final_path = path_builder.to_string_lossy().to_string();
 
         if let Some(out_dir) = output_dir {
-            // Copy the contents to the output directory
-            if let Err(e) = crate::installer::install::copy_dir_recursive(&path_builder, std::path::Path::new(&out_dir)) {
+            // Determine the name of the skill directory to create inside the output directory.
+            // e.g. if relative_path is "skills/skill-creator", skill_dir_name is "skill-creator".
+            // If relative_path is empty, use the repo name.
+            let skill_dir_name = if relative_path.is_empty() {
+                git_repo_name
+            } else {
+                relative_path.split('/').last().unwrap_or(git_repo_name)
+            };
+
+            let target_dst = std::path::Path::new(&out_dir).join(skill_dir_name);
+
+            // Copy the contents to the new target directory
+            if let Err(e) = crate::installer::install::copy_dir_recursive(&path_builder, &target_dst) {
                 eprintln!("复制到目标文件夹失败: {}", e);
             } else {
-                final_path = out_dir;
+                final_path = target_dst.to_string_lossy().to_string();
             }
         }
 
