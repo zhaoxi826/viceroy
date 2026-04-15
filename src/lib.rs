@@ -1,2 +1,2 @@
-mod installer;
-mod manifest;
+pub mod installer;
+pub mod manifest;
