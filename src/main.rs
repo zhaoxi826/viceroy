@@ -52,8 +52,13 @@ fn main() -> Result<()> {
             println!("Done.");
         }
         Commands::Install { url, path, cache_dir, output } => {
-            println!("Installing skill from {} into {}", url, cache_dir);
-            let skill = SkillModel::install(url.clone(), cache_dir.clone(), path.clone(), output.clone());
+            let mut final_url = url.clone();
+            if !final_url.starts_with("http://") && !final_url.starts_with("https://") && !final_url.starts_with("git@") {
+                final_url = format!("https://github.com/{}", final_url);
+            }
+
+            println!("Installing skill from {} into {}", final_url, cache_dir);
+            let skill = SkillModel::install(final_url, cache_dir.clone(), path.clone(), output.clone());
             println!("Analyzing installed skill at {}", skill.skill_path);
             skill.analysis()?;
             println!("Done.");

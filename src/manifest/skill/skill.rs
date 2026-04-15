@@ -14,9 +14,14 @@ impl SkillModel{
             .last()
             .unwrap_or("default_repo")
             .trim_end_matches(".git");
+
+        let clean_relative_path = relative_path.trim_matches('/');
+
         let mut path_builder = PathBuf::from(&root_cache_path);
         path_builder.push(git_repo_name);
-        path_builder.push(&relative_path);
+        if !clean_relative_path.is_empty() {
+            path_builder.push(clean_relative_path);
+        }
 
         let mut final_path = path_builder.to_string_lossy().to_string();
 
@@ -24,10 +29,10 @@ impl SkillModel{
             // Determine the name of the skill directory to create inside the output directory.
             // e.g. if relative_path is "skills/skill-creator", skill_dir_name is "skill-creator".
             // If relative_path is empty, use the repo name.
-            let skill_dir_name = if relative_path.is_empty() {
+            let skill_dir_name = if clean_relative_path.is_empty() {
                 git_repo_name
             } else {
-                relative_path.split('/').last().unwrap_or(git_repo_name)
+                clean_relative_path.split('/').last().unwrap_or(git_repo_name)
             };
 
             let target_dst = std::path::Path::new(&out_dir).join(skill_dir_name);
