@@ -4,7 +4,7 @@ use crate::manifest::skill::model::SkillModel;
 use std::path::PathBuf;
 
 impl SkillModel{
-    fn install(git_repo_url: String, root_cache_path: String, relative_path: String) -> Self{
+    pub fn install(git_repo_url: String, root_cache_path: String, relative_path: String) -> Self{
         let git_installer = git::GitInstaller::new(&git_repo_url, &root_cache_path);
         if let Err(e) = git_installer.download() {
             eprintln!("安装失败: {}", e);
@@ -22,7 +22,10 @@ impl SkillModel{
             skill_path,
         }
     }
-    fn analysis(&self){
+    pub fn analysis(&self) -> anyhow::Result<()> {
+        use std::path::Path;
+        use crate::manifest::skill::analysis::process_and_save_skill;
+        process_and_save_skill(Path::new(&self.skill_path))
     }
 }
 

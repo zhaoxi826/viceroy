@@ -1,6 +1,7 @@
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;
 use viceroy::manifest::skill::analysis::process_and_save_skill;
+use viceroy::manifest::skill::model::SkillModel;
 use anyhow::Result;
 
 #[derive(Parser)]
@@ -19,6 +20,19 @@ enum Commands {
         #[arg(short, long, value_name = "DIR")]
         path: PathBuf,
     },
+    /// Install a skill from a Git repository and parse it
+    Install {
+        /// The Git repository URL
+        url: String,
+
+        /// Subdirectory path inside the repo (default is root)
+        #[arg(short, long, default_value = "")]
+        path: String,
+
+        /// Root cache directory to clone into
+        #[arg(short, long, default_value = ".cache")]
+        cache_dir: String,
+    },
 }
 
 fn main() -> Result<()> {
@@ -31,6 +45,13 @@ fn main() -> Result<()> {
             }
             println!("Parsing skill directory: {:?}", path);
             process_and_save_skill(path)?;
+            println!("Done.");
+        }
+        Commands::Install { url, path, cache_dir } => {
+            println!("Installing skill from {} into {}", url, cache_dir);
+            let skill = SkillModel::install(url.clone(), cache_dir.clone(), path.clone());
+            println!("Analyzing installed skill at {}", skill.skill_path);
+            skill.analysis()?;
             println!("Done.");
         }
     }

@@ -1,4 +1,4 @@
-use crate::manifest::skill::skill_structure_tree::{SkillNode, SkillMetadata, PythonFuncNode, PythonFileNode};
+use crate::manifest::skill::skill_structure_tree::{SkillNode, SkillJson, PythonFuncNode, PythonFileNode};
 use walkdir::WalkDir;
 use std::path::Path;
 use std::collections::HashMap;
@@ -6,8 +6,8 @@ use ruff_python_parser::{parse, Mode};
 use ruff_python_ast::{Mod, Stmt};
 use regex::Regex;
 
-pub fn parse_skill_md(content: &str) -> SkillMetadata {
-    let mut metadata = SkillMetadata::default();
+pub fn parse_skill_md(content: &str) -> SkillJson {
+    let mut metadata = SkillJson::default();
 
     // Pattern to match YAML frontmatter between `---` and `---`
     let re_frontmatter = Regex::new(r"(?s)^---\s*(.*?)\s*---").unwrap();
@@ -60,7 +60,7 @@ fn analyze_python_file(code: &str) -> PythonFileNode {
     }
 }
 
-pub fn analyze_skill_directory(root_path: &Path) -> (Option<SkillMetadata>, SkillNode) {
+pub fn analyze_skill_directory(root_path: &Path) -> (Option<SkillJson>, SkillNode) {
     let mut root_node = SkillNode::new_folder("root");
     let mut skill_metadata = None;
 

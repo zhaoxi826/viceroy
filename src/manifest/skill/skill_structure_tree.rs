@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Default)]
-pub struct SkillMetadata {
+pub struct SkillJson {
     pub name: String,
     pub description: String,
     pub instructions: String,
