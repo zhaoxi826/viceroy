@@ -13,15 +13,14 @@ pub fn parse_skill_md(content: &str) -> SkillJson {
     let re_frontmatter = Regex::new(r"(?s)^---\s*(.*?)\s*---").unwrap();
     if let Some(caps) = re_frontmatter.captures(content) {
         let frontmatter = caps.get(1).map_or("", |m| m.as_str());
-        for line in frontmatter.lines() {
-            if let Some((key, value)) = line.split_once(':') {
-                let k = key.trim();
-                let v = value.trim();
-                if k == "name" {
-                    metadata.name = v.to_string();
-                } else if k == "description" {
-                    metadata.description = v.to_string();
-                }
+
+        // Parse frontmatter properly using serde_yaml to support multiline values like `|`
+        if let Ok(yaml_data) = serde_yaml::from_str::<serde_json::Value>(frontmatter) {
+            if let Some(name) = yaml_data.get("name").and_then(|v| v.as_str()) {
+                metadata.name = name.to_string();
+            }
+            if let Some(desc) = yaml_data.get("description").and_then(|v| v.as_str()) {
+                metadata.description = desc.to_string();
             }
         }
 
