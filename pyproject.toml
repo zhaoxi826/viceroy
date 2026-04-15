@@ -1,0 +1,21 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "pretor-viceroy"  # 确保这里和 Cargo.toml 中的 name 一致
+version = "0.1.1"
+description = "High-performance skill installer and analysis tool"
+requires-python = ">=3.8"
+authors = [
+    { name = "zhaoxi826" }
+]
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+
+[tool.maturin]
+# 告诉 maturin 你的 Rust 源码在哪里（通常不用改）
+features = ["pyo3/extension-module"]

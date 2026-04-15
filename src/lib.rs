@@ -16,3 +16,22 @@
 
 pub mod installer;
 pub mod manifest;
+
+use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
+
+#[pyfunction]
+#[pyo3(signature = (url, path=String::new(), cache=String::from(".cache"), output=None))]
+fn install_skill(url: String, path: String, cache: String, output: Option<String>) -> PyResult<String> {
+    let skill = manifest::skill::model::SkillModel::install(url, cache, path, output);
+    skill.analysis().map_err(|e| {
+        PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("Analysis failed: {}", e))
+    })?;
+    Ok(skill.skill_path)
+}
+
+#[pymodule]
+fn viceroy(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(install_skill, m)?)?;
+    Ok(())
+}

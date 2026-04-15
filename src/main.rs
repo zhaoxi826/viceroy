@@ -72,7 +72,6 @@ fn main() -> Result<()> {
             if !final_url.starts_with("http://") && !final_url.starts_with("https://") && !final_url.starts_with("git@") {
                 final_url = format!("https://github.com/{}", final_url);
             }
-
             println!("Installing skill from {} into {}", final_url, cache_dir);
             let skill = SkillModel::install(final_url, cache_dir.clone(), path.clone(), output.clone());
             println!("Analyzing installed skill at {}", skill.skill_path);
