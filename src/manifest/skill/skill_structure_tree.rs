@@ -1,5 +1,12 @@
 use std::collections::HashMap;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize, Default)]
+pub struct SkillMetadata {
+    pub name: String,
+    pub description: String,
+    pub instructions: String,
+}
 
 #[derive(Serialize)]
 pub struct PythonFuncNode{
