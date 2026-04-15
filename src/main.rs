@@ -26,12 +26,16 @@ enum Commands {
         url: String,
 
         /// Subdirectory path inside the repo (default is root)
-        #[arg(short, long, default_value = "")]
+        #[arg(short = 'p', long, default_value = "")]
         path: String,
 
         /// Root cache directory to clone into
-        #[arg(short, long, default_value = ".cache")]
+        #[arg(short = 'c', long, default_value = ".cache")]
         cache_dir: String,
+
+        /// Output directory to move the final skill into
+        #[arg(short = 'o', long)]
+        output: Option<String>,
     },
 }
 
@@ -47,9 +51,9 @@ fn main() -> Result<()> {
             process_and_save_skill(path)?;
             println!("Done.");
         }
-        Commands::Install { url, path, cache_dir } => {
+        Commands::Install { url, path, cache_dir, output } => {
             println!("Installing skill from {} into {}", url, cache_dir);
-            let skill = SkillModel::install(url.clone(), cache_dir.clone(), path.clone());
+            let skill = SkillModel::install(url.clone(), cache_dir.clone(), path.clone(), output.clone());
             println!("Analyzing installed skill at {}", skill.skill_path);
             skill.analysis()?;
             println!("Done.");
