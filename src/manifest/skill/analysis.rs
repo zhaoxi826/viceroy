@@ -70,7 +70,8 @@ pub fn analyze_skill_directory(root_path: &Path) -> (Option<SkillJson>, SkillNod
             let file_name_str = path.file_name().unwrap().to_string_lossy().to_string();
 
             // Skip useless files
-            if file_name_str.to_lowercase() == "license" || file_name_str.starts_with('.') {
+            let lower_name = file_name_str.to_lowercase();
+            if lower_name.starts_with("license") || file_name_str.starts_with('.') {
                 continue;
             }
 
