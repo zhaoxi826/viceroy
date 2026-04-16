@@ -1,6 +1,6 @@
 [package]
 name = "pretor-viceroy"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["zhaoxi826"]
 description = "A high-performance skill installer and analysis tool for Pretor Multi-Agent system."
 homepage = "https://github.com/zhaoxi826/viceroy"
@@ -24,3 +24,5 @@ ruff_python_ast = { git = "https://github.com/astral-sh/ruff", rev = "v0.4.0" }
 regex = "1.12.3"
 serde_yaml = "0.9.34"
 pyo3 = { version = "0.28.3", features = ["extension-module"] }
+tokio = { version = "1.52.0", features = ["rt", "rt-multi-thread", "macros"] }
+pyo3-async-runtimes = { version = "0.28.0", features = ["tokio-runtime"] }

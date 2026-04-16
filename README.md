@@ -14,6 +14,19 @@ viceroy 是一个由rust编写的安装工具，用于pretor的插件管理
 pretor项目仓库：https://github.com/zhaoxi826/Pretor
 
 ---
+##快速开始
+```Bash
+pip install pretor-viceroy
+#或者使用uv
+uv pip install pretor-viceroy
+```
+在项目中使用
+```python
+import viceroy
+```
+
+
+---
 ## 目前支持对象
 - skill: 安装skill并进行简单的解析到目标文件夹下
 

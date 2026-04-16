@@ -30,8 +30,29 @@ fn install_skill(url: String, path: String, cache: String, output: Option<String
     Ok(skill.skill_path)
 }
 
+#[pyfunction(signature = (url, path=String::new(), cache=String::from(".cache"), output=None))]
+fn install_skill_async(py: Python<'_>, url: String, path: String, cache: String, output: Option<String>) -> PyResult<Bound<'_, PyAny>> {
+    pyo3_async_runtimes::tokio::future_into_py(py, async move {
+        let result = tokio::task::spawn_blocking(move || {
+            let skill = manifest::skill::model::SkillModel::install(url, cache, path, output);
+            skill.analysis().map_err(|e| {
+                PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("Analysis failed: {}", e))
+            })?;
+            Ok::<String, PyErr>(skill.skill_path)
+        })
+            .await;
+
+        match result {
+            Ok(Ok(path)) => Ok(path),
+            Ok(Err(e)) => Err(e),
+            Err(e) => Err(PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("Task failed: {}", e))),
+        }
+    })
+}
+
 #[pymodule]
 fn viceroy(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(install_skill, m)?)?;
+    m.add_function(wrap_pyfunction!(install_skill_async, m)?)?;
     Ok(())
 }

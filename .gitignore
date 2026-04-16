@@ -1,3 +1,5 @@
 /target
 .idea
 .cache
+.venv
+test_output
