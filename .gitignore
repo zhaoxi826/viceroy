@@ -1,3 +1,7 @@
 /target
 .idea
-.cache
+.cache.venv
+.venv/
+out_dir_async_skills/
+.cache/
+out_dir_async_skills
